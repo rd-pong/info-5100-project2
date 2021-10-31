@@ -33,6 +33,7 @@
   <body>
     <div class="container larger">
     <h3>Notes for October 13</h3>  
+    <input id = 'input-field'></input>
     <svg id="choropleth" height="600" width="900" style="background: #445; margin-top:50px" >
   
     </svg>
@@ -127,14 +128,20 @@
       var surveyData = await d3.csv("state-survey-responses-fa21.csv", d3.autotype);
       console.log(surveyData)
 
-      let skipData = await d3.json('example.json', d3.autotype);
-      console.log("SKIP'S DATA");
-      console.log(skipData);
+      let choroplethData = await d3.json('example.json', d3.autotype);
+      console.log("CHOROPLETH DATA");
+      console.log(choroplethData);
+
+      // Get the username from the field
+      let inputFieldValue = d3.select('.input-field'),value
+      console.log(inputFieldValue);
+      console.log("NEW USER");
+      let username = 'RealSkipBayless';
 
       surveyData.forEach( obj => {
-        //obj.total = 5;
-        obj.total = skipData[obj.state_name];
+        obj.total = choroplethData[obj.state_name][username];
       })
+      
       console.log('NEW DATA');
       console.log(surveyData);
     
