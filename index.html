@@ -1,0 +1,91 @@
+<html>
+<head>
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+    <script src="https://d3js.org/topojson.v3.min.js"></script>
+
+    <style>
+        .state {
+            fill: lightgrey;
+        }
+        
+        .graticule {
+            fill: none;
+            stroke: grey;
+            stroke-width: 1px;
+        }
+
+        .outline {
+            fill: none;
+            stroke: black;
+            stroke-width: 1px;
+        }
+    </style>
+</head>
+<body>
+    <form id = 'text-form'>
+        <input id = 'input-field' type = 'text'></input>
+        <!-- <input id = 'input-submit' type = 'submit'></input> -->
+        <button id = 'submit' type = 'button'>Submit</button>
+    </form>
+    
+    <svg id="choropleth" height="900" width="900"></svg>
+    
+<script>
+    const svg = d3.select('#choropleth');
+
+    // Get the attributes of the svg
+    const svgWidth = svg.attr('width');
+    const svgHeight = svg.attr('height');
+
+    // Create choropleth map attributes
+    const margin = { left: 10, right: 10, top: 10, bottom: 10 };
+    const plotWidth = svgWidth - margin.left - margin.right;
+    const plotHeight = svgHeight - margin.top - margin.bottom;
+
+    const plot = svg.append('g').attr('transform', `translate(${margin.left}, ${margin.right})`);
+    
+    const makeChoropleth = async function() {
+
+        // Modeled after topojson lecture code by Prof Rz.
+        const data = await d3.json('us-smaller.json');
+
+        let states = topojson.feature(data, data.objects.states);
+        let statesMesh = topojson.mesh(data, data.objects.states);
+        let projection2d = d3.geoAlbersUsa().fitSize([plotWidth, plotHeight], states);
+        let path = d3.geoPath().projection(projection2d);
+        let graticule = d3.geoGraticule10();
+
+        plot.append('path')
+            .attr('class', 'graticule')
+            .attr('d', path(graticule))
+        
+        plot.selectAll('path.state')
+            .data(states.features)
+            .join('path')
+            .attr('class', 'state')
+            .attr('d', path)
+        
+        plot.append('path')
+            .datum(statesMesh)
+            .attr('class', 'outline')
+            .attr('d', path)
+
+        let inputField = d3.select('#input-field');
+        console.log(inputField.attr('value'))
+
+        let submitButton = d3.select('#submit')
+            .on('click', () => console.log(inputField.property('value')))
+    }
+
+    const updateChoropleth = async function(username) {
+        // Load twitter data
+        let tweetStateData = await d3.json('example.json', d3.autotype);
+        console.log(tweetStateData);
+    }
+
+
+    makeChoropleth();
+
+</script>
+</body>
+</html>
