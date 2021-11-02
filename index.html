@@ -78,9 +78,16 @@
     }
 
     const updateChoropleth = async function(username) {
+        console.log("UPDATING");
+    
         // Load twitter data
         let tweetStateData = await d3.json('example.json', d3.autotype);
         console.log(tweetStateData);
+
+        let emptyStateData = await d3.csv('empty-states.csv', d3.autotype);
+        console.log(emptyStateData);
+
+        tweetStateData.map( obj)
     }
 
 

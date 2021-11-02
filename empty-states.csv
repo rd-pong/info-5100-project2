@@ -1,0 +1,53 @@
+state_name,total,state_code,state_short
+Alabama,0,1,AL
+Alaska,0,2,AK
+Arizona,0,4,AZ
+Arkansas,0,5,AR
+California,0,6,CA
+Colorado,0,8,CO
+Connecticut,0,9,CT
+Delaware,0,10,DE
+District of Columbia,0,11,DC
+Florida,0,12,FL
+Georgia,0,13,GA
+Hawaii,0,15,HI
+Idaho,0,16,ID
+Illinois,0,17,IL
+Indiana,0,18,IN
+Iowa,0,19,IA
+Kansas,0,20,KS
+Kentucky,0,21,KY
+Louisiana,0,22,LA
+Maine,0,23,ME
+Maryland,0,24,MD
+Massachusetts,0,25,MA
+Michigan,0,26,MI
+Minnesota,0,27,MN
+Mississippi,0,28,MS
+Missouri,0,29,MO
+Montana,0,30,MT
+Nebraska,0,31,NE
+Nevada,0,32,NV
+New Hampshire,0,33,NH
+New Jersey,0,34,NJ
+New Mexico,0,35,NM
+New York,0,36,NY
+North Carolina,0,37,NC
+North Dakota,0,38,ND
+Ohio,0,39,OH
+Oklahoma,0,40,OK
+Oregon,0,41,OR
+Pennsylvania,0,42,PA
+Puerto Rico,0,72,PR
+Rhode Island,0,44,RI
+South Carolina,0,45,SC
+South Dakota,0,46,SD
+Tennessee,0,47,TN
+Texas,0,48,TX
+Utah,0,49,UT
+Vermont,0,50,VT
+Virginia,0,51,VA
+Washington,0,53,WA
+West Virginia,0,54,WV
+Wisconsin,0,55,WI
+Wyoming,0,56,WY
