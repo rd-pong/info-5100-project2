@@ -43,6 +43,8 @@
     const plotHeight = svgHeight - margin.top - margin.bottom;
 
     const plot = svg.append('g').attr('transform', `translate(${margin.left}, ${margin.right})`);
+
+    let tweetStateData;
     
     const makeChoropleth = async function() {
 
@@ -70,24 +72,120 @@
             .attr('class', 'outline')
             .attr('d', path)
 
-        let inputField = d3.select('#input-field');
-        console.log(inputField.attr('value'))
-
         let submitButton = d3.select('#submit')
-            .on('click', () => console.log(inputField.property('value')))
+            .on('click', updateChoropleth)
+        
+        // Load twitter data for choropleth map
+        tweetStateData = await d3.json('twitterStateMentions.json', d3.autotype);
+
+        // Create the popup
+        let popupWidth = 200;
+        let popupHeight = 100;
+
+        let momesh = plot.append('path')
+                         .attr('class', 'mouseover outline')
+                         .attr('d', '')
+        
+        let popup = plot.append('g')
+                        .attr('class', 'popup')
+                        .attr('visiblity', 'hidden')
+        
+        popup.append('rect')
+             .attr('fill', 'orange')
+             .attr('opacity', 0.8)
+             .attr('x', -popupWidth / 2)
+             .attr('y', 0)
+             .attr('width', popupWidth)
+             .attr('height', popupHeight)
+        
+        let stateText = popup.append('text')
+                             .attr("fill", "white")
+                             .attr("text-anchor","middle")
+                             .attr("alignment-baseline","hanging")
+                             .attr("x", 0)
+                             .attr("y", 2)
+        
+        let freqText = popup.append('text')
+                            .attr("fill", "white")
+                            .attr("text-anchor","middle")
+                            .attr("alignment-baseline","hanging")
+                            .attr("x", 0)
+                            .attr("y", 20)
+        
+        d3.selectAll('state').on('mouseenter', mouseEnterState);
+        d3.selectAll('state').on('mouseout', mouseExitState);
+    
     }
 
-    const updateChoropleth = async function(username) {
+    function mouseEnterState() {
+        console.log('ENTER');
+
+        plot.style('visibility', 'visible');
+        let currentState = d3.select(this);
+        let currentStateId = currentState.datum().id;
+        stateText.text(stateIdNames[currentStateId]);
+        freqText.text(freq[currentStateId])
+
+        let currentStateBounds = path.bounds(currentState.datum());
+
+        // Ceter it above the current state
+        let xPos = (bounds[0][0] + bounds[1][0]) / 2;
+        let yPos = bounds[0][0] + popupHeight;
+
+        popup.attr('transform', `translate(${xPos}, ${yPos})`);
+
+        let mo = topojson.mesh(data, data.objects.states, function(a, b) { return a.id === currentStateID || b.id === currentStateID; });
+        momesh.datum(mo).attr("d", path)
+
+    }
+
+    function mouseExitState() {
+        console.log('EXIT');
+
+        popup.style('visibility','hidden');
+        momesh.attr("d", "");
+ 
+   }
+
+    const updateChoropleth = async function() {
         console.log("UPDATING");
-    
-        // Load twitter data
-        let tweetStateData = await d3.json('example.json', d3.autotype);
         console.log(tweetStateData);
+
+        let inputField = d3.select('#input-field');
+        let username = inputField.property('value');
+    
 
         let emptyStateData = await d3.csv('empty-states.csv', d3.autotype);
         console.log(emptyStateData);
 
-        tweetStateData.map( obj)
+        // Create dictionaries to store the plot data - modeled after Prof Rz's lecture
+        counts = {};
+        names = {};
+        freq = {};
+        
+        let total = Number(tweetStateData['total'][username]);
+        let count;
+        // Update emptyStateData based on the selected user
+        emptyStateData.forEach( (obj) => {
+            count = tweetStateData[obj.state_name][username];
+            obj.total = count;
+            counts[obj.state_code] = count;
+            names[obj.state_code] = obj.state_name;
+            freq[obj.state_code] = count * 100 / total;
+        })
+
+        console.log("NEW DATA");
+        console.log(emptyStateData);
+
+        // Styling
+        let colorScale = d3.scaleQuantile()
+                            .domain(Object.values(counts))
+                            .range(["#fff","#d1e8ed","#adc2da","#8879b3","#762b80"]);
+        
+        // Color the choropleth map
+        plot.selectAll('path.state')
+            .style('fill', d => colorScale(counts[d.id]))
+
     }
 
 
