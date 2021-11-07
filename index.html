@@ -45,16 +45,54 @@
     const plot = svg.append('g').attr('transform', `translate(${margin.left}, ${margin.right})`);
 
     let tweetStateData;
+    let freq = {};
     
+    // Create the popup
+    let popupWidth = 120;
+    let popupHeight = 50;
+
+    let momesh = plot.append('path')
+                        .attr('class', 'mouseover outline')
+                        .attr('d', '')
+    
+    let popup = plot.append('g')
+                    .attr('class', 'popup')
+                    .attr('visiblity', 'hidden')
+    
+    popup.append('rect')
+            .attr('fill', 'black')
+            .attr('opacity', 0.8)
+            .attr('x', -popupWidth / 2)
+            .attr('y', 0)
+            .attr('width', popupWidth)
+            .attr('height', popupHeight)
+    popup.style('visibility','hidden');
+    
+    let stateText = popup.append('text')
+                            .attr("fill", "white")
+                            .attr("text-anchor","middle")
+                            .attr("alignment-baseline","hanging")
+                            .attr("x", 0)
+                            .attr("y", 10)
+    
+    let freqText = popup.append('text')
+                        .attr("fill", "white")
+                        .attr("text-anchor","middle")
+                        .attr("alignment-baseline","hanging")
+                        .attr("x", 0)
+                        .attr("y", 30)
+    
+    let path, data;
+
     const makeChoropleth = async function() {
 
         // Modeled after topojson lecture code by Prof Rz.
-        const data = await d3.json('us-smaller.json');
+        data = await d3.json('us-smaller.json');
 
         let states = topojson.feature(data, data.objects.states);
         let statesMesh = topojson.mesh(data, data.objects.states);
         let projection2d = d3.geoAlbersUsa().fitSize([plotWidth, plotHeight], states);
-        let path = d3.geoPath().projection(projection2d);
+        path = d3.geoPath().projection(projection2d);
         let graticule = d3.geoGraticule10();
 
         plot.append('path')
@@ -78,63 +116,42 @@
         // Load twitter data for choropleth map
         tweetStateData = await d3.json('twitterStateMentions.json', d3.autotype);
 
-        // Create the popup
-        let popupWidth = 200;
-        let popupHeight = 100;
-
-        let momesh = plot.append('path')
-                         .attr('class', 'mouseover outline')
-                         .attr('d', '')
+        let emptyData = await d3.csv('empty-states.csv', d3.autotype);
+        stateMap = {}
+        emptyData.forEach( obj => {
+            stateMap[obj.state_code] = obj.state_name;
+        })
+        console.log(emptyData);
+        console.log(stateMap)
         
-        let popup = plot.append('g')
-                        .attr('class', 'popup')
-                        .attr('visiblity', 'hidden')
-        
-        popup.append('rect')
-             .attr('fill', 'orange')
-             .attr('opacity', 0.8)
-             .attr('x', -popupWidth / 2)
-             .attr('y', 0)
-             .attr('width', popupWidth)
-             .attr('height', popupHeight)
-        
-        let stateText = popup.append('text')
-                             .attr("fill", "white")
-                             .attr("text-anchor","middle")
-                             .attr("alignment-baseline","hanging")
-                             .attr("x", 0)
-                             .attr("y", 2)
-        
-        let freqText = popup.append('text')
-                            .attr("fill", "white")
-                            .attr("text-anchor","middle")
-                            .attr("alignment-baseline","hanging")
-                            .attr("x", 0)
-                            .attr("y", 20)
-        
-        d3.selectAll('state').on('mouseenter', mouseEnterState);
-        d3.selectAll('state').on('mouseout', mouseExitState);
+        d3.selectAll('.state').on('mouseenter', function() {
+            return mouseEnterState(this, stateMap)
+        });
+        d3.selectAll('.state').on('mouseout', mouseExitState);
     
     }
 
-    function mouseEnterState() {
+    function mouseEnterState(obj, stateMap) {
         console.log('ENTER');
 
-        plot.style('visibility', 'visible');
-        let currentState = d3.select(this);
+        popup.style('visibility', 'visible');
+        popup.raise();
+        let currentState = d3.select(obj);
         let currentStateId = currentState.datum().id;
-        stateText.text(stateIdNames[currentStateId]);
-        freqText.text(freq[currentStateId])
 
+        stateText.text(stateMap[currentStateId]);
+        freqText.text(d3.format('.2f')(freq[currentStateId]) + '%')
+        //console.log(freq);
         let currentStateBounds = path.bounds(currentState.datum());
 
         // Ceter it above the current state
-        let xPos = (bounds[0][0] + bounds[1][0]) / 2;
-        let yPos = bounds[0][0] + popupHeight;
+        let xPos = (currentStateBounds[0][0] + currentStateBounds[1][0]) / 2;
+        let yPos = currentStateBounds[0][1] - popupHeight + 10;
 
         popup.attr('transform', `translate(${xPos}, ${yPos})`);
+        console.log(xPos, yPos);
 
-        let mo = topojson.mesh(data, data.objects.states, function(a, b) { return a.id === currentStateID || b.id === currentStateID; });
+        let mo = topojson.mesh(data, data.objects.states, function(a, b) { return a.id === currentStateId || b.id === currentStateId; });
         momesh.datum(mo).attr("d", path)
 
     }
