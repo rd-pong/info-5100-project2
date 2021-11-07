@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Word cloud</title>
+    <!--- D3 IMPORT HERE --->
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/d3-cloud/1.2.5/d3.layout.cloud.js"></script>
+
+    <!--- D3 IMPORT HERE --->
+    <style>
+
+    </style>
+</head>
+
+<body>
+    <h1>
+        Word Cloud
+    </h1>
+
+    <id="p1">
+        <h2>Problem 1</h2>
+
+        <svg id="word-cloud" height="500" width="800" style="margin:20px; border:1px solid grey" /> </svg>
+        <ul id='list'>
+
+        </ul>
+        <script>
+            let svg = d3.select("svg#word-cloud");
+            let width = svg.attr("width");
+            let height = svg.attr("height");
+            // let margin = { top: 10, right: 10, bottom: 10, left: 10 };
+            // let mapWidth = width - margin.left - margin.right;
+            // let mapHeight = height - margin.top - margin.bottom;
+            // let mapArea = svg.append("g").attr("id", "points")
+            //     .attr("transform", `translate(${margin.left},${margin.top})`);
+
+            let requestData = async function () {
+                let word_freq = await d3.json("./word-freq-sorted-full without http.json");
+                console.log(word_freq);
+
+                let fill = d3.scaleOrdinal(d3.schemeCategory10);
+
+                // var data = [
+                //     { text: "Hello", value: 6260 },
+                //     { text: "happy", value: 990 },
+                //     { text: "pie", value: 4230 }];
+
+                let data = word_freq;
+
+                const freqExtent = d3.extent(data, d => d['value']);
+                console.log(freqExtent);
+                // const wordScale = d3.scaleLinear()
+                //     .domain(freqExtent)
+                //     .range([10, 120])
+                const wordScale = d3.scaleLog()
+                    .domain(freqExtent)
+                    .range([5, 200])
+
+                var layout = d3.layout.cloud()
+                    .size([width, height])
+                    .words(data)
+                    .font("Impact")
+                    .fontSize(d => wordScale(d['value']))
+                    .padding(5)
+                    .rotate(function () { return ~~(Math.random() * 2) * 90; })
+                    .on("end", draw);
+
+                layout.start();
+
+                function draw(words) {
+                    d3.select("svg#word-cloud")
+                        .append("g")
+                        .attr("id", "wordInCloud")
+                        .attr("transform", "translate(" + layout.size()[0] / 2 + "," + layout.size()[1] / 2 + ")")
+                        .selectAll("text")
+                        .data(words)
+                        .join("text")
+                        .text((d) => d.text)
+                        .style("font-size", (d) => d.size + "px")
+                        .style("font-family", (d) => d.font)
+                        .transition().duration(600)
+                        .style("fill", (d, i) => fill(i))
+                        .attr("text-anchor", "middle")
+                        .attr("transform", (d) => "translate(" + [d.x, d.y] + ")rotate(" + d.rotate + ")");
+                }
+
+
+            }
+            // call
+            requestData();
+
+
+        </script>
+
+        </p>
+
+</body>
+
+</html>
