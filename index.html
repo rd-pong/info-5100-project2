@@ -86,6 +86,11 @@
 
     const makeChoropleth = async function() {
 
+        // Load twitter data for choropleth map
+        tweetStateData = await d3.json('twitterStateMentions.json', d3.autotype);
+        //console.log('DATA');
+        //console.log(tweetStateData);
+
         // Modeled after topojson lecture code by Prof Rz.
         data = await d3.json('us-smaller.json');
 
@@ -112,27 +117,25 @@
 
         let submitButton = d3.select('#submit')
             .on('click', updateChoropleth)
-        
-        // Load twitter data for choropleth map
-        tweetStateData = await d3.json('twitterStateMentions.json', d3.autotype);
 
         let emptyData = await d3.csv('empty-states.csv', d3.autotype);
         stateMap = {}
         emptyData.forEach( obj => {
             stateMap[obj.state_code] = obj.state_name;
         })
-        console.log(emptyData);
-        console.log(stateMap)
+        //(emptyData);
+        //console.log(stateMap)
         
         d3.selectAll('.state').on('mouseenter', function() {
             return mouseEnterState(this, stateMap)
         });
         d3.selectAll('.state').on('mouseout', mouseExitState);
-    
+
+        updateChoropleth(); // update once with the cumulative data
     }
 
     function mouseEnterState(obj, stateMap) {
-        console.log('ENTER');
+        //console.log('ENTER');
 
         popup.style('visibility', 'visible');
         popup.raise();
@@ -140,7 +143,7 @@
         let currentStateId = currentState.datum().id;
 
         stateText.text(stateMap[currentStateId]);
-        freqText.text(d3.format('.2f')(freq[currentStateId]) + '%')
+        freqText.text(d3.format('.4f')(freq[currentStateId]) + '%')
         //console.log(freq);
         let currentStateBounds = path.bounds(currentState.datum());
 
@@ -149,7 +152,7 @@
         let yPos = currentStateBounds[0][1] - popupHeight + 10;
 
         popup.attr('transform', `translate(${xPos}, ${yPos})`);
-        console.log(xPos, yPos);
+        //console.log(xPos, yPos);
 
         let mo = topojson.mesh(data, data.objects.states, function(a, b) { return a.id === currentStateId || b.id === currentStateId; });
         momesh.datum(mo).attr("d", path)
@@ -157,7 +160,7 @@
     }
 
     function mouseExitState() {
-        console.log('EXIT');
+        //('EXIT');
 
         popup.style('visibility','hidden');
         momesh.attr("d", "");
@@ -170,17 +173,20 @@
 
         let inputField = d3.select('#input-field');
         let username = inputField.property('value');
-    
 
+        if (username.length === 0) { // submit hasn't been pressed yet
+            username = 'total';
+        }
+
+        let total = Number(tweetStateData['Num_Tweets'][username]);
         let emptyStateData = await d3.csv('empty-states.csv', d3.autotype);
-        console.log(emptyStateData);
+        //console.log(emptyStateData);
 
         // Create dictionaries to store the plot data - modeled after Prof Rz's lecture
         counts = {};
         names = {};
         freq = {};
         
-        let total = Number(tweetStateData['total'][username]);
         let count;
         // Update emptyStateData based on the selected user
         emptyStateData.forEach( (obj) => {
@@ -191,8 +197,11 @@
             freq[obj.state_code] = count * 100 / total;
         })
 
-        console.log("NEW DATA");
-        console.log(emptyStateData);
+        //console.log("NEW DATA");
+        //console.log(emptyStateData);
+
+        console.log('COUNTS');
+        console.log(counts);
 
         // Styling
         let colorScale = d3.scaleQuantile()
@@ -204,9 +213,8 @@
             .style('fill', d => colorScale(counts[d.id]))
 
     }
-
-
     makeChoropleth();
+
 
 </script>
 </body>
