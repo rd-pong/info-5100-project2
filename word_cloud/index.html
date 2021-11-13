@@ -38,7 +38,7 @@
             //     .attr("transform", `translate(${margin.left},${margin.top})`);
 
             let requestData = async function () {
-                let word_freq = await d3.json("./word-freq-sorted-full.json");
+                let word_freq = await d3.json("./word-freq-sorted-full select.json");
                 console.log(word_freq);
 
                 let fill = d3.scaleOrdinal(d3.schemeCategory10);
