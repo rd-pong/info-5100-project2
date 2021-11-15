@@ -21,7 +21,7 @@
     </h1>
 
     <id="p1">
-        <h2>word-cloud by group</h2>
+        <h2>Interesting word-cloud by group</h2>
         <div id="pulldown-bar">
             <select id="sort-select" style="width:260px;">
                 <option value="full" selected>Full</option>
@@ -54,44 +54,7 @@
                 let nba_freq = await d3.json("./word-freq-select-nba.json")
                 let sport_freq = await d3.json("./word-freq-select-sport.json")
 
-                drawByData(word_freq)
-
-                d3.select("#sort-select").on("change", function () {
-                    svg.selectAll("*").remove();
-
-                    var option = d3.select(this).property("value")
-                    console.log(option);
-
-                    if (option === "actor") {
-                        word_freq = actor_freq
-                    }
-                    else if (option === "cornell") {
-                        word_freq = cornell_freq
-                    }
-                    else if (option === "entrepreneur") {
-                        word_freq = entrepreneur_freq
-                    }
-                    else if (option === "musician") {
-                        word_freq = musician_freq
-                    }
-                    else if (option === "nba") {
-                        word_freq = nba_freq
-                    }
-                    else if (option === "sport") {
-                        word_freq = sport_freq
-                    }
-                    else {
-                        word_freq = word_freq
-                    }
-
-                    drawByData(word_freq)
-                })
-
-            }
-            // call
-            requestData();
-
-            function drawByData(word_freq) {
+                // console.log(word_freq);
                 let fill = d3.scaleOrdinal(d3.schemeCategory10);
 
                 let data = word_freq;
@@ -132,7 +95,82 @@
                         .attr("text-anchor", "middle")
                         .attr("transform", (d) => "translate(" + [d.x, d.y] + ")rotate(" + d.rotate + ")");
                 }
+
+                d3.select("#sort-select").on("change", function () {
+                    svg.selectAll("*").remove();
+
+                    var option = d3.select(this).property("value")
+                    console.log(option);
+
+                    if (option === "actor") {
+                        word_freq = actor_freq
+                    }
+                    else if (option === "cornell") {
+                        word_freq = cornell_freq
+                    }
+                    else if (option === "entrepreneur") {
+                        word_freq = entrepreneur_freq
+                    }
+                    else if (option === "musician") {
+                        word_freq = musician_freq
+                    }
+                    else if (option === "nba") {
+                        word_freq = nba_freq
+                    }
+                    else if (option === "sport") {
+                        word_freq = sport_freq
+                    }
+                    else {
+                        word_freq = word_freq
+                    }
+
+                    console.log(word_freq);
+
+
+                    let data = word_freq;
+                    const freqExtent = d3.extent(data, d => d['value']);
+                    console.log(freqExtent);
+                    // const wordScale = d3.scaleLinear()
+                    //     .domain(freqExtent)
+                    //     .range([10, 120])
+                    const wordScale = d3.scaleLog()
+                        .domain(freqExtent)
+                        .range([20, 150])
+
+                    var layout = d3.layout.cloud()
+                        .size([width, height])
+                        .words(data)
+                        .font("Impact")
+                        .fontSize(d => wordScale(d['value']))
+                        .padding(3)
+                        // .rotate(function () { return ~~(Math.random() * 2) * 90; })
+                        .rotate(function () { return 0; })
+                        .on("end", draw);
+
+                    layout.start();
+
+                    function draw(words) {
+                        d3.select("svg#word-cloud")
+                            .append("g")
+                            .attr("id", "wordInCloud")
+                            .attr("transform", "translate(" + layout.size()[0] / 2 + "," + layout.size()[1] / 2 + ")")
+                            .selectAll("text")
+                            .data(words)
+                            .join("text")
+                            .text((d) => d.text)
+                            .style("font-size", (d) => d.size + "px")
+                            .style("font-family", (d) => d.font)
+                            .transition().duration(600)
+                            .style("fill", (d, i) => fill(i))
+                            .attr("text-anchor", "middle")
+                            .attr("transform", (d) => "translate(" + [d.x, d.y] + ")rotate(" + d.rotate + ")");
+                    }
+                })
+
             }
+            // call
+            requestData();
+
         </script>
 
         </p>
