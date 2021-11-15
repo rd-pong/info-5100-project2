@@ -1,75 +1,15 @@
 [
     {
-        "text": "love",
-        "value": 4297
-    },
-    {
-        "text": "new",
-        "value": 3556
-    },
-    {
-        "text": "show",
-        "value": 2623
-    },
-    {
-        "text": "thank",
-        "value": 2477
-    },
-    {
         "text": "steveaoki",
         "value": 2117
-    },
-    {
-        "text": "tonight",
-        "value": 1891
-    },
-    {
-        "text": "night",
-        "value": 1607
     },
     {
         "text": "music",
         "value": 1589
     },
     {
-        "text": "aoki",
-        "value": 1521
-    },
-    {
-        "text": "video",
-        "value": 1431
-    },
-    {
         "text": "album",
         "value": 1358
-    },
-    {
-        "text": "world",
-        "value": 1292
-    },
-    {
-        "text": "coming",
-        "value": 1284
-    },
-    {
-        "text": "fans",
-        "value": 1206
-    },
-    {
-        "text": "live",
-        "value": 1172
-    },
-    {
-        "text": "tour",
-        "value": 1160
-    },
-    {
-        "text": "dim",
-        "value": 1134
-    },
-    {
-        "text": "mak",
-        "value": 1107
     },
     {
         "text": "aokijump",
@@ -78,9 +18,5 @@
     {
         "text": "party",
         "value": 1068
-    },
-    {
-        "text": "best",
-        "value": 1036
     }
 ]
