@@ -45,7 +45,7 @@
             let height = svg.attr("height");
 
             let requestData = async function () {
-                let word_freq = await d3.json("./word-freq-select-full.json");
+                let full_freq = await d3.json("./word-freq-select-full.json");
 
                 let actor_freq = await d3.json("./word-freq-select-actor.json")
                 let cornell_freq = await d3.json("./word-freq-select-cornell.json")
@@ -54,7 +54,7 @@
                 let nba_freq = await d3.json("./word-freq-select-nba.json")
                 let sport_freq = await d3.json("./word-freq-select-sport.json")
 
-                drawByData(word_freq)
+                drawByData(full_freq)
 
                 d3.select("#sort-select").on("change", function () {
                     svg.selectAll("*").remove();
@@ -81,7 +81,7 @@
                         word_freq = sport_freq
                     }
                     else {
-                        word_freq = word_freq
+                        word_freq = full_freq
                     }
 
                     drawByData(word_freq)
