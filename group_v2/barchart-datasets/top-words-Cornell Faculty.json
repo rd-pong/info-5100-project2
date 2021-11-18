@@ -1,0 +1,27 @@
+[
+    {
+        "text": "data",
+        "value": 338,
+        "format": "Data"
+    },
+    {
+        "text": "cornell",
+        "value": 211,
+        "format": "Cornell"
+    },
+    {
+        "text": "research",
+        "value": 179,
+        "format": "Research"
+    },
+    {
+        "text": "students",
+        "value": 178,
+        "format": "Students"
+    },
+    {
+        "text": "congrats",
+        "value": 168, 
+        "format": "Congrats"
+    }
+]
