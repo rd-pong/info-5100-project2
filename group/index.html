@@ -45,6 +45,7 @@
             fill: none;
             stroke: grey;
             stroke-width: 1px;
+            opacity: 0.4;
         }
 
         .outline {
@@ -80,8 +81,9 @@
 
         label {
           font-family: Georgia, serif;
-          font-weight: bold;
           font-size: 15px;
+          font-weight: bold;
+          font-style: italic;
         }
 
 
@@ -96,17 +98,18 @@
     <p id="p1">
         <h3> Graph 1: Most Mentioned Word cloud by User Groups</h3>
         <div id="pulldown-bar" >
-            <select id="sort-select" style="width:260px;" >
-                <option value="full" selected>Full</option>
-                <option value="actor">Actors / Actress</option>
-                <option value="cornell">Cornell Faculty</option>
-                <option value="entrepreneur">Entrepreneurs</option>
-                <option value="musician">Musician</option>
-                <option value="nba">NBA Players</option>
-                <option value="sport">Sport Analysts</option>
-            </select>
+        	<label for="usergroup-select-1" id="usergroup-1">Usergroup: </label>
+            <select id="sort-select" style="width:200px; margin-left: 5px; margin-top: 15px;" >
+                <option value="full" selected>Show All Users</option>
+                <option value="sport">Show Sport Analyst</option>
+                <option value="nba">Show NBA Player</option>
+                <option value="actor">Show Actor or Actress</option>
+                <option value="entrepreneur">Show Entrepreneur</option>
+                <option value="musician">Show Musician</option>
+                <option value="cornell">Show Cornell Faculty</option>
+                </select>
         </div>
-        <svg id="word-cloud" height="500" width="900" style="margin:25px;" /> </svg>
+        <svg id="word-cloud" height="500" width="900" style="margin:20px;" /> </svg>
         <ul id='list'>
 
         </ul>
@@ -118,8 +121,9 @@
             let height1 = svg1.attr("height");
 
             let requestData = async function () {
-                let word_freq = await d3.json("./datasets/word-freq-select-full.json");
+                let word_freq;
 
+                let full_freq = await d3.json("./datasets/word-freq-select-full.json");
                 let actor_freq = await d3.json("./datasets/word-freq-select-actor.json")
                 let cornell_freq = await d3.json("./datasets/word-freq-select-cornell.json")
                 let entrepreneur_freq = await d3.json("./datasets/word-freq-select-entrepreneur.json")
@@ -127,7 +131,7 @@
                 let nba_freq = await d3.json("./datasets/word-freq-select-nba.json")
                 let sport_freq = await d3.json("./datasets/word-freq-select-sport.json")
 
-                drawByData(word_freq)
+                drawByData(full_freq)
 
                 d3.select("#sort-select").on("change", function () {
                     svg1.selectAll("*").remove();
@@ -154,7 +158,7 @@
                         word_freq = sport_freq
                     }
                     else {
-                        word_freq = word_freq
+                        word_freq = full_freq
                     }
 
                     drawByData(word_freq)
@@ -192,21 +196,22 @@
                 layout.start();
 
                 function draw(words) {
-                    d3.select("svg#word-cloud")
-                        .append("g")
-                        .attr("id", "wordInCloud")
-                        .attr("transform", "translate(" + layout.size()[0] / 2 + "," + layout.size()[1] / 2 + ")")
-                        .selectAll("text")
-                        .data(words)
-                        .join("text")
-                        .text((d) => d.text)
-                        .style("font-size", (d) => d.size + "px")
-                        .style("font-family", (d) => d.font)
-                        .transition().duration(600)
-                        .style("fill", (d, i) => fill(i))
-                        .attr("text-anchor", "middle")
-                        .attr("transform", (d) => "translate(" + [d.x, d.y] + ")rotate(" + d.rotate + ")");
+                  d3.select("svg#word-cloud")
+                      .append("g")
+                      .attr("id", "wordInCloud")
+                      .attr("transform", "translate(" + layout.size()[0] / 2 + "," + layout.size()[1] / 2 + ")")
+                      .selectAll("text")
+                      .data(words)
+                      .join("text")
+                      .text((d) => d.text)
+                      .style("font-size", (d) => d.size + "px")
+                      .style("font-family", (d) => d.font)
+                      .transition().duration(600)
+                      .style("fill", (d, i) => fill(i))
+                      .attr("text-anchor", "middle")
+                      .attr("transform", (d) => "translate(" + [d.x, d.y] + ")rotate(" + d.rotate + ")");
                 }
+
             }
         </script>
     </p>
@@ -218,7 +223,7 @@
         <h3> Graph 2: Mentioned Frequency in Percentage by Groups & Users</h3>
         <div id = "dropdown">
           <label for="usergroup-select" id="usergroup">Usergroup: </label>
-          <select id="usergroup-select" style="width:300px; margin-right: 50px; margin-left: 5px">
+          <select id="usergroup-select" style="width:200px; margin-right: 50px; margin-left: 5px; margin-top: 15px;">
             <option value="AllUsers" selected>Show All Users</option>
             <option value="Sport Analyst">Show Sport Analyst</option>
             <option value="Actor or Actress">Show Actor or Actress</option>
@@ -229,7 +234,7 @@
           </select>
 
           <label for="keyword-select" id="word">Top Word: </label>
-          <select id="keyword-select" style="width:200px; margin-left: 5px">
+          <select id="keyword-select" style="width:200px; margin-left: 5px; margin-top: 15px;">
           </select>
         </div>
 
@@ -237,7 +242,7 @@
 
         <div id="barchart_svg">
 
-          <svg id="bar-chart" height="600" width="800" style="margin-top:10px">
+          <svg id="bar-chart" height="600" width="800" style="margin-top: 1px; margin-bottom: 25px;">
           </svg>
 
         </div>
@@ -332,7 +337,7 @@
 
           // Create colorScale for six usergroups
           const usergroup_categories = ['Sport Analyst', 'Actor or Actress', 'NBA Player', 'Musician', 'Entrepreneur', 'Cornell Faculty'];
-          const colorpalate = ['#76B7B2', '#AF7AA1', '#E15759', '#FF9DA7', '#59A14F', '#F28E2C'];
+          const colorpalate = ['#4e79a7', '#AF7AA1', '#E15759', '#FF9DA7', '#59A14F', '#F28E2C'];
           const colorScale = d3.scaleOrdinal()
                               .domain(usergroup_categories)
                               .range(colorpalate);
@@ -664,15 +669,24 @@
     <div id="p3" style="text-align: center;">
     <p id="p3">
         <h3> Graph 3: Mentioned Frequency by States</h3>
-            <form id = 'text-form'>
-        <input id = 'input-field' type = 'text'></input>
-        <!-- <input id = 'input-submit' type = 'submit'></input> -->
-        <button id = 'submit' type = 'button'>Submit</button>
-    </form>
+        <div id="sport-analyst-dropdown">
+            <label for="sport-analyst" id="users">
+            	Choose a Sports Analyst:
+            </label>
+            <select id="sport-analysts" style="width:200px; margin-left: 5px; margin-top: 15px">
+              <option value="total">All Sports Analysts</option>
+              <option value="maxkellerman">Max Kellerman</option>
+              <option value="PatMcAfeeShow">Pat McAfee</option>
+              <option value="RealSkipBayless">Skip Bayless</option>
+              <option value="ShannonSharpe">Shannon Sharpe</option>
+              <option value="stephenasmith">Steven A. Smith</option>
+            </select>
+        </div>
 
-    <svg id="choropleth" height="700" width="1000" style="background: #F1F9FF; margin-top:20px"></svg>
+    <svg id="userInfo" height="120" width="800" style="background: #fff; margin-top:1px"></svg>
+    <svg id="choropleth" height="700" width="1000" style="background: #F1F9FF; margin-top:2px"></svg>
     <svg id="colorLegend" height="100" width="800" style="background: #fff; margin-top:10px"></svg>
-    <svg id="userInfo" height="200" width="800" style="background: #fff; margin-top:1px"></svg>
+
 
 
 <script>
@@ -719,7 +733,7 @@
                             .attr("alignment-baseline","hanging")
                             .attr("font-size", 15)
                             .attr("x", 0)
-                            .attr("y", 10)
+                            .attr("y", 10);
 
     let freqText = popup.append('text')
                         .attr("fill", "white")
@@ -727,7 +741,7 @@
                         .attr("alignment-baseline","hanging")
                         .attr("font-size", 15)
                         .attr("x", 0)
-                        .attr("y", 30)
+                        .attr("y", 30);
 
 
     let path, data;
@@ -763,8 +777,8 @@
             .attr('class', 'outline')
             .attr('d', path)
 
-        let submitButton = d3.select('#submit')
-            .on('click', updateChoropleth)
+        let dropdown = d3.select('select#sport-analysts')
+            .on('change', updateChoropleth)
 
         let emptyData = await d3.csv('./datasets/empty-states.csv', d3.autotype);
         stateMap = {}
@@ -803,7 +817,7 @@
         //console.log(xPos, yPos);
 
         let mo = topojson.mesh(data, data.objects.states, function(a, b) { return a.id === currentStateId || b.id === currentStateId; });
-        momesh.datum(mo).attr("d", path)
+        momesh.datum(mo).attr("d", path);
 
     }
 
@@ -819,12 +833,8 @@
         console.log("UPDATING");
         console.log(tweetStateData);
 
-        let inputField = d3.select('#input-field');
-        let username = inputField.property('value');
-
-        if (username.length === 0) { // submit hasn't been pressed yet
-            username = 'total';
-        }
+        let select = d3.select('select#sport-analysts');
+        let username = select.node().value;
 
         let total = Number(tweetStateData['Num_Tweets'][username]);
         let emptyStateData = await d3.csv('./datasets/empty-states.csv', d3.autotype);
@@ -859,6 +869,7 @@
         // Color the choropleth map
         plot.selectAll('path.state')
             .style('fill', d => colorScale(counts[d.id]))
+            .attr("opacity", 0.8)
 
         // Draw legend
         const map_legend = d3.select("svg#colorLegend")
@@ -874,10 +885,7 @@
             .attr("fill", "white")
 
 
-
-
-
-       let Info_detail_max5, Info_detail_other1, Info_detail_other2;
+       let Info_detail_max5, Info_detail_other1, Info_detail_other2, Info_detail_other3;
         if (username === "total") {
             Info_detail_max5 = "Max 5: Maine / Indiana / Washington / Texas / Ohio"
             Info_detail_other1 = " "
@@ -885,64 +893,76 @@
         }
         else if (username === "RealSkipBayless") {
             Info_detail_max5 = "Max 5: Texas / Oklahoma / Washington / Ohio / Arizona"
-            Info_detail_other1 = "Born in Oklahoma City, Oklahoma"
-            Info_detail_other2 = "Fan of the Dallas Cowboys (Texas) NFL team and Oklahoma Sooners College Football Team"
+            Info_detail_other1 = "1)　Born in Oklahoma City, Oklahoma"
+            Info_detail_other2 = "2)　Fan of the Dallas Cowboys (Texas) NFL team and Oklahoma Sooners College Football Team"
         }
         else if (username === "ShannonSharpe") {
             Info_detail_max5 = "Max 5: Maine / Indiana / Washington / Texas / Ohio"
-            Info_detail_other1 = "Attended Savannah State University (Georgia)"
-            Info_detail_other2 = "Played in the NFL for the Denver Broncos (Colorado) and Baltimore Ravens (Maryland)"
+            Info_detail_other1 = "1)　Attended Savannah State University (Georgia)"
+            Info_detail_other2 = "2)　Played in the NFL for the Denver Broncos (Colorado) and Baltimore Ravens (Maryland)"
         }
         else if (username === "PatMcAfeeShow") {
             Info_detail_max5 = "Max 5: Indiana / Ohio / Washington / Virginia / Texas"
-            Info_detail_other1 = "Born in Pennsylvania"
-            Info_detail_other2 = "Played in the NFL for the Indianapolis Colts (Indiana)"
+            Info_detail_other1 = "1)　Born in Pennsylvania"
+            Info_detail_other2 = "2)　Played in the NFL for the Indianapolis Colts (Indiana)"
         }
         else if (username === "stephenasmith") {
             Info_detail_max5 = "Max 5: New York / Alabama / Michigan / Kentucky / Ohio"
-            Info_detail_other1 = "Hosts ESPN shows in New York"
-            Info_detail_other2 = "Avid boxing fan"
+            Info_detail_other1 = "1)　Hosts ESPN shows in New York"
+            Info_detail_other2 = "2)　Avid boxing fan"
         }
         else if (username === "maxkellerman") {
             Info_detail_max5 = "Max 5: Kentucky / New York / Alabama / Washington / hio"
-            Info_detail_other1 = "Hosts ESPN shows in New York"
-            Info_detail_other2 = "Infamous Dallas Cowboys 'hater' "
+            Info_detail_other1 = "1)　Hosts ESPN shows in New York"
+            Info_detail_other2 = "2)　Infamous Dallas Cowboys 'hater' "
         }
+
         let InfoText = Info.append('text')
                         .attr("fill", "black")
                         .attr("text-anchor","left")
                         .attr("alignment-baseline","hanging")
-                        .attr("font-size", 35)
+                        .attr("font-size", 14)
+                        .attr("font-weight", 800)
                         .attr("x", 20)
-                        .attr("y", 10)
-        InfoText.text(username)
+                        .attr("y", 10);
+
+        if (username === "total") {
+          InfoText.text(username);
+        }
+
+        else {
+          InfoText.attr("font-style", "italic");
+          InfoText.text("@"+username);
+        }
 
         let InfoText_max = Info.append('text')
                         .attr("fill", "black")
                         .attr("text-anchor","left")
                         .attr("alignment-baseline","hanging")
-                        .attr("font-size", 15)
+                        .attr("font-size", 13)
+                        .attr("font-weight", 350)
                         .attr("x", 20)
-                        .attr("y", 60)
+                        .attr("y", 40)
         InfoText_max.text(Info_detail_max5)
 
         let InfoText3 = Info.append('text')
                         .attr("fill", "black")
                         .attr("text-anchor","left")
                         .attr("alignment-baseline","hanging")
-                        .attr("font-size", 15)
+                        .attr("font-size", 13)
                         .attr("x", 20)
-                        .attr("y", 100)
+                        .attr("y", 70)
         InfoText3.text(Info_detail_other1)
 
         let InfoText4 = Info.append('text')
                         .attr("fill", "black")
                         .attr("text-anchor","left")
                         .attr("alignment-baseline","hanging")
-                        .attr("font-size", 15)
+                        .attr("font-size", 13)
+                        .attr("font-weight", 350)
                         .attr("x", 20)
-                        .attr("y", 140)
-        InfoText4.text(Info_detail_other2)
+                        .attr("y", 100)
+        InfoText4.text(Info_detail_other2);
 
     }
     makeChoropleth();
@@ -979,14 +999,16 @@
         .attr("transform","translate("+(20)+","+(barHeight+5)+")")
         .call(barAxis);
 
-      let bar = legend.append("g").attr("transform","translate("+(20)+","+(0)+")")
+      let bar = legend.append("g").attr("transform","translate("+(20)+","+(0)+")").attr("opacity", 0.8)
       for (let i=0; i<legendWidth-40; i=i+stepSize) {
         bar.append("rect")
           .attr("x", i)
           .attr("y", 0)
           .attr("width", stepSize)
           .attr("height",barHeight)
-          .style("fill", legendColorScale( pixelScale(i) )); // pixels => countData => color
+          .attr("fill", legendColorScale( pixelScale(i) ))
+
+
       }
       bar.append("line").attr("stroke","white").attr("stroke-width",3).attr("x1", barScale(legendMinMax[0])).attr("x2", barScale(legendMinMax[0])).attr("y1", 0).attr("y1", barHeight+4);
       bar.append("line").attr("stroke","white").attr("stroke-width",3).attr("x1", barScale(legendMinMax[1])).attr("x2", barScale(legendMinMax[1])).attr("y1", 0).attr("y1", barHeight+4);
