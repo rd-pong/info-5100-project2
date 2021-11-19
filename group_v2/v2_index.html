@@ -120,8 +120,9 @@
             let height1 = svg1.attr("height");
 
             let requestData = async function () {
-                let word_freq = await d3.json("./datasets/word-freq-select-full.json");
+                let word_freq;
 
+                let full_freq = await d3.json("./datasets/word-freq-select-full.json");
                 let actor_freq = await d3.json("./datasets/word-freq-select-actor.json")
                 let cornell_freq = await d3.json("./datasets/word-freq-select-cornell.json")
                 let entrepreneur_freq = await d3.json("./datasets/word-freq-select-entrepreneur.json")
@@ -129,7 +130,7 @@
                 let nba_freq = await d3.json("./datasets/word-freq-select-nba.json")
                 let sport_freq = await d3.json("./datasets/word-freq-select-sport.json")
 
-                drawByData(word_freq)
+                drawByData(full_freq)
 
                 d3.select("#sort-select").on("change", function () {
                     svg1.selectAll("*").remove();
@@ -156,7 +157,7 @@
                         word_freq = sport_freq
                     }
                     else {
-                        word_freq = word_freq
+                        word_freq = full_freq
                     }
 
                     drawByData(word_freq)
@@ -194,21 +195,22 @@
                 layout.start();
 
                 function draw(words) {
-                    d3.select("svg#word-cloud")
-                        .append("g")
-                        .attr("id", "wordInCloud")
-                        .attr("transform", "translate(" + layout.size()[0] / 2 + "," + layout.size()[1] / 2 + ")")
-                        .selectAll("text")
-                        .data(words)
-                        .join("text")
-                        .text((d) => d.text)
-                        .style("font-size", (d) => d.size + "px")
-                        .style("font-family", (d) => d.font)
-                        .transition().duration(600)
-                        .style("fill", (d, i) => fill(i))
-                        .attr("text-anchor", "middle")
-                        .attr("transform", (d) => "translate(" + [d.x, d.y] + ")rotate(" + d.rotate + ")");
+                  d3.select("svg#word-cloud")
+                      .append("g")
+                      .attr("id", "wordInCloud")
+                      .attr("transform", "translate(" + layout.size()[0] / 2 + "," + layout.size()[1] / 2 + ")")
+                      .selectAll("text")
+                      .data(words)
+                      .join("text")
+                      .text((d) => d.text)
+                      .style("font-size", (d) => d.size + "px")
+                      .style("font-family", (d) => d.font)
+                      .transition().duration(600)
+                      .style("fill", (d, i) => fill(i))
+                      .attr("text-anchor", "middle")
+                      .attr("transform", (d) => "translate(" + [d.x, d.y] + ")rotate(" + d.rotate + ")");
                 }
+
             }
         </script>
     </p>
@@ -677,7 +679,7 @@
     <svg id="userInfo" height="120" width="800" style="background: #fff; margin-top:1px"></svg>
     <svg id="choropleth" height="700" width="1000" style="background: #F1F9FF; margin-top:2px"></svg>
     <svg id="colorLegend" height="100" width="800" style="background: #fff; margin-top:10px"></svg>
-    
+
 
 
 <script>
@@ -993,7 +995,7 @@
           .attr("width", stepSize)
           .attr("height",barHeight)
           .attr("fill", legendColorScale( pixelScale(i) ))
-          
+
 
       }
       bar.append("line").attr("stroke","white").attr("stroke-width",3).attr("x1", barScale(legendMinMax[0])).attr("x2", barScale(legendMinMax[0])).attr("y1", 0).attr("y1", barHeight+4);
