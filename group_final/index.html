@@ -30,7 +30,6 @@
             font-size: 20px;
 
             font-weight: 600;
-            padding: 25;
             text-align: left;
         }
 
@@ -73,10 +72,6 @@
             stroke-width: 1px;
         }
 
-        /*
-        styling for barchart
-        */
-
         .gridlines .domain {
           display: none;
         }
@@ -111,45 +106,54 @@
 
 <body>
 
-    <h1> Twitter Word Usage Habits </h1>
-    <div id="description">
-      <p id="description">
-        By 2021, it has <b>211 million</b> active users. On average, there are about <b>500 million</b> tweets sent every day.
-        Information exchange and spread happen quickly on this platform. However, those tweets tend to vary significantly
-        across users in aspects of contents and word choices.<br>
-      </p>
-      <p id="question">
-        <b><i>What are similarities and differences in word usages while tweeting among Twitter users
-        from different professional backgrounds?</i></b>
-      </p>
-      <p id="description">
-        The visualization will demonstrate 30 Twitter users' word-usage habits, who come freom 6 professional groups:
-        <i>Sports Analysts</i>, <i>NBA Players</i>, <i>Actors/Actresses</i>, <i>Musicians</i>, <i>Entrepreneurs</i>, and <i>Cornell Faculties</i>.
-      </p>
-    </div>
+  <body>
+      <!-- Title & Overview for Project -->
+      <h1> Twitter Word Usage Habits </h1>
+      <div id="description">
+        <p id="description">
+          By 2021, it has <b>211 million</b> active users. On average, there are about <b>500 million</b> tweets sent every day.
+          Information exchange and spread happen quickly on this platform. However, those tweets tend to vary significantly
+          across users in aspects of contents and word choices.<br>
+        </p>
+        <p id="question">
+          <b><i>What are similarities and differences in word usages while tweeting among Twitter users
+          from different professional backgrounds?</i></b>
+        </p>
+        <p id="description">
+          The visualization will demonstrate 30 Twitter users' word-usage habits, who come freom 6 professional groups:
+          <i>Sports Analysts</i>, <i>NBA Players</i>, <i>Actors/Actresses</i>, <i>Musicians</i>, <i>Entrepreneurs</i>, and <i>Cornell Faculties</i>.
+        </p>
+      </div>
 
-    <div id="p1" style="text-align: center;">
-    <p id="p1">
+      <!-- Title & Description for Plot 1-->
+      <div id="p1_title">
         <h3> Graph 1: Most Frequently Used Words by User Groups</h3>
+        <div id="description">
+          <p id="description">
+            In this visualization, you will explore the most frequently used top words by the 30 Twitter users. You can select a
+            usergroup to view top words shared by the 5 individuals in a specific professional group.
+          </p>
+        </div>
+     </div>
+     <!-- Plot 1: Word Cloud -->
+      <div id="p1" style="text-align: center;">
+      <p id="p1">
         <div id="pulldown-bar" >
         	<label for="usergroup-select-1" id="usergroup-1">Usergroup: </label>
             <select id="sort-select" style="width:200px; margin-left: 5px; margin-top: 15px;" >
                 <option value="full" selected>Show All Users</option>
                 <option value="sport">Show Sport Analyst</option>
-                <option value="nba">Show NBA Player</option>
                 <option value="actor">Show Actor or Actress</option>
-                <option value="entrepreneur">Show Entrepreneur</option>
+                <option value="nba">Show NBA Player</option>
                 <option value="musician">Show Musician</option>
+                <option value="entrepreneur">Show Entrepreneur</option>
                 <option value="cornell">Show Cornell Faculty</option>
                 </select>
         </div>
         <svg id="word-cloud" height="500" width="900" style="margin:20px;" /> </svg>
-        <ul id='list'>
 
-        </ul>
+        <!-- Coding for Plot 1 Starts Here -->
         <script>
-            // Math.seedrandom(42);
-
             let svg1 = d3.select("svg#word-cloud");
             let width1 = svg1.attr("width");
             let height1 = svg1.attr("height");
@@ -199,20 +203,18 @@
                 })
 
             }
-            // call
+            // Call requestData() function
             requestData();
 
             function drawByData(word_freq) {
-                // let fill = d3.scaleOrdinal(d3.schemeCategory10);
-                // let fill = d3.scaleOrdinal([`#383867`, `#584c77`, `#33431e`, `#a36629`, `#92462f`, `#b63e36`, `#b74a70`, `#946943`]);
+                // Create a color pallete for Plot 1
                 let fill = d3.scaleOrdinal(["#4e79a7","#f28e2c","#e15759","#76b7b2","#59a14f","#edc949","#af7aa1","#ff9da7","#9c755f","#bab0ab"]);
 
                 let data1 = word_freq;
                 const freqExtent = d3.extent(data1, d => d['value']);
                 console.log(freqExtent);
-                // const wordScale = d3.scaleLinear()
-                //     .domain(freqExtent)
-                //     .range([10, 120])
+
+                // Create a scale to determine font size
                 const wordScale = d3.scaleLog()
                     .domain(freqExtent)
                     .range([20, 150])
@@ -223,7 +225,6 @@
                     .font("Impact")
                     .fontSize(d => wordScale(d['value']))
                     .padding(3)
-                    // .rotate(function () { return ~~(Math.random() * 2) * 90; })
                     .rotate(function () { return 0; })
                     .on("end", draw);
 
@@ -251,10 +252,21 @@
     </p>
     </div>
 
-
+    <!-- Title & Description for Plot 2 -->
+    <div id="p2_title">
+      <h3> Graph 2: Word Usage Frequency in Percentage by Groups & Users </h3>
+      <div id="description">
+        <p id="description">
+          In this bar chart, you will see the percentage of tweets containing the top words from the 30 Twitter users. You can make
+          a selection of the usergroup to explore the word usage habits in this group. You can also choose an interesting top word
+          to explore its frequency distribution among users.
+        </p>
+      </div>
+   </div>
+   <!-- Plot 2: Bar Chart -->
     <div id="p2" style="text-align: center;">
     <p id="p2">
-        <h3> Graph 2: Word Usage Frequency in Percentage by Groups & Users</h3>
+        <!-- Create dropdown menus -->
         <div id = "dropdown">
           <label for="usergroup-select" id="usergroup">Usergroup: </label>
           <select id="usergroup-select" style="width:200px; margin-right: 50px; margin-left: 5px; margin-top: 15px;">
@@ -271,16 +283,13 @@
           <select id="keyword-select" style="width:200px; margin-left: 5px; margin-top: 15px;">
           </select>
         </div>
-
-
-
+        <!-- Create SVG -->
         <div id="barchart_svg">
-
           <svg id="bar-chart" height="600" width="800" style="margin-top: 1px; margin-bottom: 25px;">
           </svg>
-
         </div>
 
+      <!-- Coding part for Plot 2 starts here -->
       <script id="p2">
 
           // Prepare & Plot the SVG
@@ -338,6 +347,7 @@
 
               let fill = colorScale(d['usergroup']);
               frame.attr('fill', fill)
+              		.attr('x', 500)
                   .attr('opacity', 0.5);
             }
             else{
@@ -357,7 +367,7 @@
           // Create y-axis and y-gridelines
           // y-axis: represent the percentage of post containing a specific word
           // y-axis is going to change based on selected usergroup and word
-          let leftAxis = d3.axisLeft().tickFormat(d3.format('.0%'));
+          let leftAxis = d3.axisLeft().tickFormat(d3.format('.1%'));
           let leftAxisG = annotations.append("g")
                                     .attr("class", "y axis")
                                     .attr("transform",`translate(${margin.left-10},${margin.top})`);
@@ -388,7 +398,7 @@
           async function updateBarsAnimated( usergroup, word_chosen ) {
 
             // load in categorized_users.json data file
-            const categorized_users = await d3.json("./barchart-datasets/user_under_categories.json", d3.autoType);
+            const categorized_users = await d3.json("./datasets/user_under_categories.json", d3.autoType);
             console.log("Categorized Users: ", categorized_users);
 
             // create user account and name pairs
@@ -400,11 +410,11 @@
             });
 
             // load in processed-date-top-words.json data file
-            let data = await d3.json("./barchart-datasets/top-words_percent.json", d3.autoType);
+            let data = await d3.json("./datasets/top-words_percent.json", d3.autoType);
             console.log("Data: ", data);
 
             // load in user-followers.csv file
-            let followers = await d3.csv("./barchart-datasets/user-followers.csv", d3.autoType);
+            let followers = await d3.csv("./datasets/user-followers.csv", d3.autoType);
             console.log("Followers: ", followers);
 
             // remove all pre-existing bars
@@ -682,12 +692,12 @@
             // Get the top 10 words shared by 6 user groups
             if (usergroup === "AllUsers") {
               // load top-words-AllUsers dataset
-              top_words = await d3.json("./barchart-datasets/top-words-AllUsers.json", d3.autoType);
+              top_words = await d3.json("./datasets/top-words-AllUsers.json", d3.autoType);
             }
             // Get the top 5 words shared by an individual user group
             else {
               // load the corresponding datasets
-              top_words = await d3.json("./barchart-datasets/top-words-"+usergroup+".json", d3.autoType);
+              top_words = await d3.json("./datasets/top-words-"+usergroup+".json", d3.autoType);
             }
 
             return top_words;
@@ -699,359 +709,361 @@
     </p>
     </div>
 
-
+    <!-- Title & Description for Plot 3 -->
+    <div id="p3_title">
+      <h3> Graph 3: States Mentioned by Sports Analysts</h3>
+      <div id="description">
+        <p id="description">
+          Sports Analysts tend to mention lots of state names in their tweets due to their professional habits. <i>What
+          are most frequently mentioned states in their posts? Why are those states mentioned more than others?</i>
+        </p>
+        <p id="description">
+          You can select a Sports Analyst to explore the frequency distribution of states mentioned in his tweets.
+        </p>
+      </div>
+    </div>
+    <!-- Plot 3: Choropleth Map -->
     <div id="p3" style="text-align: center;">
-    <p id="p3">
-        <h3> Graph 3: States Mentioned by Sports Analysts</h3>
-        <div id="sport-analyst-dropdown">
-            <label for="sport-analyst" id="users">
-            	Choose a Sports Analyst:
-            </label>
-            <select id="sport-analysts" style="width:200px; margin-left: 5px; margin-top: 15px">
-              <option value="total">All Sports Analysts</option>
-              <option value="maxkellerman">Max Kellerman</option>
-              <option value="PatMcAfeeShow">Pat McAfee</option>
-              <option value="RealSkipBayless">Skip Bayless</option>
-              <option value="ShannonSharpe">Shannon Sharpe</option>
-              <option value="stephenasmith">Steven A. Smith</option>
-            </select>
-        </div>
+      <p id="p3">
+          <!-- Create dropdown menus -->
+          <div id="sport-analyst-dropdown">
+              <label for="sport-analyst" id="users">
+              	Choose a Sports Analyst:
+              </label>
+              <select id="sport-analysts" style="width:200px; margin-left: 5px; margin-top: 15px">
+                <option value="total">All Sports Analysts</option>
+                <option value="RealSkipBayless">Skip Bayless</option>
+                <option value="ShannonSharpe">Shannon Sharpe</option>
+                <option value="PatMcAfeeShow">Pat McAfee</option>
+                <option value="stephenasmith">Steven A. Smith</option>
+                <option value="maxkellerman">Max Kellerman</option>
+              </select>
+          </div>
+      <!-- Create SVG -->
+      <svg id="userInfo" height="120" width="700" style="background: #fff; margin-top:2px"></svg>
+      <svg id="choropleth" height="600" width="900" style="background: #F1F9FF; margin-top:2px"></svg>
+      <svg id="colorLegend" height="100" width="700" style="background: #fff; margin-top:2px"></svg>
 
-    
-    <svg id="userInfo" height="120" width="700" style="background: #fff; margin-top:2px"></svg>
-    <svg id="choropleth" height="600" width="900" style="background: #F1F9FF; margin-top:2px"></svg>
-    <svg id="colorLegend" height="100" width="700" style="background: #fff; margin-top:2px"></svg>
+      <!-- Coding part for Plot 3 starts here -->
+      <script>
+          const svg3 = d3.select('#choropleth');
 
+          // Get the attributes of the svg
+          const svgWidth3 = svg3.attr('width');
+          const svgHeight3 = svg3.attr('height');
 
+          // Create choropleth map attributes
+          const margin3 = { left: 10, right: 10, top: 10, bottom: 10 };
+          const plotWidth3 = svgWidth3 - margin3.left - margin3.right;
+          const plotHeight3 = svgHeight3 - margin3.top - margin3.bottom;
 
-<script>
-    const svg3 = d3.select('#choropleth');
+          const plot = svg3.append('g').attr('transform', `translate(${margin3.left}, ${margin3.right})`);
 
-    // Get the attributes of the svg
-    const svgWidth3 = svg3.attr('width');
-    const svgHeight3 = svg3.attr('height');
+          let tweetStateData;
+          let freq = {};
 
-    // Create choropleth map attributes
-    const margin3 = { left: 10, right: 10, top: 10, bottom: 10 };
-    const plotWidth3 = svgWidth3 - margin3.left - margin3.right;
-    const plotHeight3 = svgHeight3 - margin3.top - margin3.bottom;
+          // Create the popup
+          let popupWidth = 120;
+          let popupHeight = 50;
 
-    const plot = svg3.append('g').attr('transform', `translate(${margin3.left}, ${margin3.right})`);
+          let momesh = plot.append('path')
+                              .attr('class', 'mouseover outline')
+                              .attr('d', '')
 
-    let tweetStateData;
-    let freq = {};
+          let popup = plot.append('g')
+                          .attr('class', 'popup')
+                          .attr('visiblity', 'hidden')
 
-    // Create the popup
-    let popupWidth = 120;
-    let popupHeight = 50;
+          popup.append('rect')
+                  .attr('fill', 'black')
+                  .attr('opacity', 0.8)
+                  .attr('x', -popupWidth / 2)
+                  .attr('y', 0)
+                  .attr('width', popupWidth)
+                  .attr('height', popupHeight)
+          popup.style('visibility','hidden');
 
-    let momesh = plot.append('path')
-                        .attr('class', 'mouseover outline')
-                        .attr('d', '')
+          let stateText = popup.append('text')
+                                  .attr("fill", "white")
+                                  .attr("text-anchor","middle")
+                                  .attr("alignment-baseline","hanging")
+                                  .attr("font-size", 15)
+                                  .attr("x", 0)
+                                  .attr("y", 10);
 
-    let popup = plot.append('g')
-                    .attr('class', 'popup')
-                    .attr('visiblity', 'hidden')
-
-    popup.append('rect')
-            .attr('fill', 'black')
-            .attr('opacity', 0.8)
-            .attr('x', -popupWidth / 2)
-            .attr('y', 0)
-            .attr('width', popupWidth)
-            .attr('height', popupHeight)
-    popup.style('visibility','hidden');
-
-    let stateText = popup.append('text')
-                            .attr("fill", "white")
-                            .attr("text-anchor","middle")
-                            .attr("alignment-baseline","hanging")
-                            .attr("font-size", 15)
-                            .attr("x", 0)
-                            .attr("y", 10);
-
-    let freqText = popup.append('text')
-                        .attr("fill", "white")
-                        .attr("text-anchor","middle")
-                        .attr("alignment-baseline","hanging")
-                        .attr("font-size", 15)
-                        .attr("x", 0)
-                        .attr("y", 30);
+          let freqText = popup.append('text')
+                              .attr("fill", "white")
+                              .attr("text-anchor","middle")
+                              .attr("alignment-baseline","hanging")
+                              .attr("font-size", 15)
+                              .attr("x", 0)
+                              .attr("y", 30);
 
 
-    let path, data;
+          let path, data;
 
-    const makeChoropleth = async function() {
+          const makeChoropleth = async function() {
 
-        // Load twitter data for choropleth map
-        tweetStateData = await d3.json('./datasets/twitterStateMentions.json', d3.autotype);
-        //console.log('DATA');
-        //console.log(tweetStateData);
+              // Load twitter data for choropleth map
+              tweetStateData = await d3.json('./datasets/twitterStateMentions.json', d3.autotype);
 
-        // Modeled after topojson lecture code by Prof Rz.
-        data = await d3.json('./datasets/us-smaller.json');
+              // Modeled after topojson lecture code by Prof Rz.
+              data = await d3.json('./datasets/us-smaller.json');
 
-        let states = topojson.feature(data, data.objects.states);
-        let statesMesh = topojson.mesh(data, data.objects.states);
-        let projection2d = d3.geoAlbersUsa().fitSize([plotWidth3, plotHeight3], states);
-        path = d3.geoPath().projection(projection2d);
-        let graticule = d3.geoGraticule10();
+              let states = topojson.feature(data, data.objects.states);
+              let statesMesh = topojson.mesh(data, data.objects.states);
+              let projection2d = d3.geoAlbersUsa().fitSize([plotWidth3, plotHeight3], states);
+              path = d3.geoPath().projection(projection2d);
+              let graticule = d3.geoGraticule10();
 
-        plot.append('path')
-            .attr('class', 'graticule')
-            .attr('d', path(graticule))
+              plot.append('path')
+                  .attr('class', 'graticule')
+                  .attr('d', path(graticule))
 
-        plot.selectAll('path.state')
-            .data(states.features)
-            .join('path')
-            .attr('class', 'state')
-            .attr('d', path)
+              plot.selectAll('path.state')
+                  .data(states.features)
+                  .join('path')
+                  .attr('class', 'state')
+                  .attr('d', path)
 
-        plot.append('path')
-            .datum(statesMesh)
-            .attr('class', 'outline')
-            .attr('d', path)
+              plot.append('path')
+                  .datum(statesMesh)
+                  .attr('class', 'outline')
+                  .attr('d', path)
 
-        let dropdown = d3.select('select#sport-analysts')
-            .on('change', updateChoropleth)
+              let dropdown = d3.select('select#sport-analysts')
+                  .on('change', updateChoropleth)
 
-        let emptyData = await d3.csv('./datasets/empty-states.csv', d3.autotype);
-        stateMap = {}
-        emptyData.forEach( obj => {
-            stateMap[obj.state_code] = obj.state_name;
-        })
-        //(emptyData);
-        //console.log(stateMap)
+              let emptyData = await d3.csv('./datasets/empty-states.csv', d3.autotype);
+              stateMap = {}
+              emptyData.forEach( obj => {
+                  stateMap[obj.state_code] = obj.state_name;
+              })
 
-        d3.selectAll('.state').on('mouseenter', function() {
-            return mouseEnterState(this, stateMap)
-        });
-        d3.selectAll('.state').on('mouseout', mouseExitState);
+              d3.selectAll('.state').on('mouseenter', function() {
+                  return mouseEnterState(this, stateMap)
+              });
+              d3.selectAll('.state').on('mouseout', mouseExitState);
 
-        updateChoropleth(); // update once with the cumulative data
-    }
+              updateChoropleth(); // update once with the cumulative data
+          }
 
-    function mouseEnterState(obj, stateMap) {
-        //console.log('ENTER');
+          function mouseEnterState(obj, stateMap) {
 
-        popup.style('visibility', 'visible');
-        popup.raise();
-        let currentState = d3.select(obj);
-        let currentStateId = currentState.datum().id;
+              popup.style('visibility', 'visible');
+              popup.raise();
+              let currentState = d3.select(obj);
+              let currentStateId = currentState.datum().id;
 
-        stateText.text(stateMap[currentStateId]);
-        freqText.text(d3.format('.2f')(freq[currentStateId]*100) + '%')
-        //console.log(freq);
-        let currentStateBounds = path.bounds(currentState.datum());
+              stateText.text(stateMap[currentStateId]);
+              freqText.text(d3.format('.2f')(freq[currentStateId]*100) + '%')
 
-        // Ceter it above the current state
-        let xPos = (currentStateBounds[0][0] + currentStateBounds[1][0]) / 2;
-        let yPos = currentStateBounds[0][1] - popupHeight + 10;
+              let currentStateBounds = path.bounds(currentState.datum());
 
-        popup.attr('transform', `translate(${xPos}, ${yPos})`);
-        //console.log(xPos, yPos);
+              // Ceter it above the current state
+              let xPos = (currentStateBounds[0][0] + currentStateBounds[1][0]) / 2;
+              let yPos = currentStateBounds[0][1] - popupHeight + 10;
 
-        let mo = topojson.mesh(data, data.objects.states, function(a, b) { return a.id === currentStateId || b.id === currentStateId; });
-        momesh.datum(mo).attr("d", path);
+              popup.attr('transform', `translate(${xPos}, ${yPos})`);
 
-    }
+              let mo = topojson.mesh(data, data.objects.states, function(a, b) { return a.id === currentStateId || b.id === currentStateId; });
+              momesh.datum(mo).attr("d", path);
 
-    function mouseExitState() {
-        //('EXIT');
+          }
 
-        popup.style('visibility','hidden');
-        momesh.attr("d", "");
+          function mouseExitState() {
 
-   }
+              popup.style('visibility','hidden');
+              momesh.attr("d", "");
 
-    const updateChoropleth = async function() {
-        console.log("UPDATING");
-        console.log(tweetStateData);
+         }
 
-        let select = d3.select('select#sport-analysts');
-        let username = select.node().value;
+         // Create a function to update Choropleth Map
+          const updateChoropleth = async function() {
+              console.log("UPDATING");
+              console.log(tweetStateData);
 
-        let total = Number(tweetStateData['Num_Tweets'][username]);
-        let emptyStateData = await d3.csv('./datasets/empty-states.csv', d3.autotype);
-        //console.log(emptyStateData);
+              let select = d3.select('select#sport-analysts');
+              let username = select.node().value;
 
-        // Create dictionaries to store the plot data - modeled after Prof Rz's lecture
-        counts = {};
-        names = {};
-        freq = {};
+              let total = Number(tweetStateData['Num_Tweets'][username]);
+              let emptyStateData = await d3.csv('./datasets/empty-states.csv', d3.autotype);
 
-        let count;
-        // Update emptyStateData based on the selected user
-        emptyStateData.forEach( (obj) => {
-            count = tweetStateData[obj.state_name][username];
-            obj.total = count;
-            counts[obj.state_code] = count;
-            names[obj.state_code] = obj.state_name;
-            freq[obj.state_code] = count * 100 / total;
-        })
+              // Create dictionaries to store the plot data - modeled after Prof Rz's lecture
+              counts = {};
+              names = {};
+              freq = {};
 
-        //console.log("NEW DATA");
-        //console.log(emptyStateData);
+              let count;
+              // Update emptyStateData based on the selected user
+              emptyStateData.forEach( (obj) => {
+                  count = tweetStateData[obj.state_name][username];
+                  obj.total = count;
+                  counts[obj.state_code] = count;
+                  names[obj.state_code] = obj.state_name;
+                  freq[obj.state_code] = count * 100 / total;
+              })
 
-        console.log('COUNTS');
-        console.log(counts);
+              console.log('COUNTS');
+              console.log(counts);
 
-        // Styling
-        let colorScale = d3.scaleQuantile()
-                            .domain(Object.values(counts))
-                            .range(["#B3D0ED","#5A8BBC","#1B4875","#082F56"]);
+              //
+              // Styling
+              //
+              let colorScale = d3.scaleQuantile()
+                                  .domain(Object.values(counts))
+                                  .range(["#B3D0ED","#5A8BBC","#1B4875","#082F56"]);
 
-        // Color the choropleth map
-        plot.selectAll('path.state')
-            .style('fill', d => colorScale(counts[d.id]))
-            .attr("opacity", 0.8)
+              // Color the choropleth map
+              plot.selectAll('path.state')
+                  .style('fill', d => colorScale(counts[d.id]))
+                  .attr("opacity", 0.8)
 
-        // Draw legend
-        const map_legend = d3.select("svg#colorLegend")
+              // Draw legend
+              const map_legend = d3.select("svg#colorLegend")
 
-        drawLegend(d3.select("#colorLegend"), colorScale);
+              drawLegend(d3.select("#colorLegend"), colorScale);
 
-        const Info = d3.select('svg#userInfo');
-        Info.append("rect")
-            .attr("x", 0)
-            .attr("height", 300)
-            .attr("y", 0)
-            .attr("width", 900)
-            .attr("fill", "white")
+              // Add Info Box
+              const Info = d3.select('svg#userInfo');
+              Info.append("rect")
+                  .attr("x", 0)
+                  .attr("height", 300)
+                  .attr("y", 0)
+                  .attr("width", 900)
+                  .attr("fill", "white")
 
 
-       let Info_detail_max5, Info_detail_other1, Info_detail_other2, Info_detail_other3;
-        if (username === "total") {
-            Info_detail_max5 = "Top 5 States: Maine / Indiana / Washington / Texas / Ohio"
-            Info_detail_other1 = " "
-            Info_detail_other2 = " "
+             let Info_detail_max5, Info_detail_other1, Info_detail_other2, Info_detail_other3;
+              if (username === "total") {
+                  Info_detail_max5 = "Top 5 States: Maine / Indiana / Washington / Texas / Ohio"
+                  Info_detail_other1 = " "
+                  Info_detail_other2 = " "
+              }
+              else if (username === "RealSkipBayless") {
+                  Info_detail_max5 = "Top 5 States: Texas / Oklahoma / Washington / Ohio / Arizona"
+                  Info_detail_other1 = "1)　Born in Oklahoma City, Oklahoma"
+                  Info_detail_other2 = "2)　Fan of the Dallas Cowboys (Texas) NFL team and Oklahoma Sooners College Football Team"
+              }
+              else if (username === "ShannonSharpe") {
+                  Info_detail_max5 = "Top 5 States: Maine / Indiana / Washington / Texas / Ohio"
+                  Info_detail_other1 = "1)　Attended Savannah State University (Georgia)"
+                  Info_detail_other2 = "2)　Played in the NFL for the Denver Broncos (Colorado) and Baltimore Ravens (Maryland)"
+              }
+              else if (username === "PatMcAfeeShow") {
+                  Info_detail_max5 = "Top 5 States: Indiana / Ohio / Washington / Virginia / Texas"
+                  Info_detail_other1 = "1)　Born in Pennsylvania"
+                  Info_detail_other2 = "2)　Played in the NFL for the Indianapolis Colts (Indiana)"
+              }
+              else if (username === "maxkellerman") {
+                  Info_detail_max5 = "Top 5 States: Kentucky / New York / Alabama / Washington / Ohio"
+                  Info_detail_other1 = "1)　Hosts ESPN shows in New York"
+                  Info_detail_other2 = "2)　Avid boxing fan"
+              }
+              else if (username === "stephenasmith") {
+                  Info_detail_max5 = "Top 5 States: New York / Alabama / Michigan / Kentucky / Ohio"
+                  Info_detail_other1 = "1)　Hosts ESPN shows in New York"
+                  Info_detail_other2 = "2)　Infamous Dallas Cowboys 'hater' "
+              }
+
+              let InfoText = Info.append('text')
+                              .attr("fill", "black")
+                              .attr("text-anchor","left")
+                              .attr("alignment-baseline","hanging")
+                              .attr("font-size", 14)
+                              .attr("font-weight", 800)
+                              .attr("x", 20)
+                              .attr("y", 10);
+
+              if (username === "total") {
+                InfoText.text("All Sports Analysts");
+              }
+
+              else {
+                InfoText.attr("font-style", "italic");
+                InfoText.text("@"+username);
+              }
+
+              let InfoText_max = Info.append('text')
+                              .attr("fill", "black")
+                              .attr("text-anchor","left")
+                              .attr("alignment-baseline","hanging")
+                              .attr("font-size", 13)
+                              .attr("font-weight", 350)
+                              .attr("x", 20)
+                              .attr("y", 40)
+              InfoText_max.text(Info_detail_max5)
+
+              let InfoText3 = Info.append('text')
+                              .attr("fill", "black")
+                              .attr("text-anchor","left")
+                              .attr("alignment-baseline","hanging")
+                              .attr("font-size", 13)
+                              .attr("x", 20)
+                              .attr("y", 70)
+              InfoText3.text(Info_detail_other1)
+
+              let InfoText4 = Info.append('text')
+                              .attr("fill", "black")
+                              .attr("text-anchor","left")
+                              .attr("alignment-baseline","hanging")
+                              .attr("font-size", 13)
+                              .attr("font-weight", 350)
+                              .attr("x", 20)
+                              .attr("y", 100)
+              InfoText4.text(Info_detail_other2);
+
+          }
+          makeChoropleth();
+
+      </script>
+      <!-- Coding part to draw color legend for Plot 3 -->
+      <script>
+
+        function drawLegend(legend, legendColorScale) {
+
+          const legendWidth = legend.attr("width");
+          const legendHeight = legend.attr("height");
+          const legendMinMax = d3.extent(legendColorScale.domain());
+          const barHeight = 60;
+          const stepSize = 4;
+          const pixelScale = d3.scaleLinear().domain([0,legendWidth-40]).range([legendMinMax[0]-1,legendMinMax[1]+1]);
+          const barScale = d3.scaleLinear().domain([legendMinMax[0]-1,legendMinMax[1]+1]).range([0,legendWidth-40]);
+          const barAxis = d3.axisBottom(barScale);
+
+          if (legendColorScale.hasOwnProperty('quantiles')) {
+            barAxis.tickValues(legendColorScale.quantiles().concat( legendMinMax ));
+          }
+          legend.append("rect")
+                .attr("x", 0)
+                .attr("height", 300)
+                .attr("y", 0)
+                .attr("width", 900)
+                .attr("fill", "white")
+
+          legend.append("g")
+            .attr("class", "colorbar axis")
+            .attr("transform","translate("+(20)+","+(barHeight+5)+")")
+            .call(barAxis);
+
+          let bar = legend.append("g").attr("transform","translate("+(20)+","+(0)+")").attr("opacity", 0.8)
+          for (let i=0; i<legendWidth-40; i=i+stepSize) {
+            bar.append("rect")
+              .attr("x", i)
+              .attr("y", 0)
+              .attr("width", stepSize)
+              .attr("height",barHeight)
+              .attr("fill", legendColorScale( pixelScale(i) ))
+
+
+          }
+          bar.append("line").attr("stroke","white").attr("stroke-width",3).attr("x1", barScale(legendMinMax[0])).attr("x2", barScale(legendMinMax[0])).attr("y1", 0).attr("y1", barHeight+4);
+          bar.append("line").attr("stroke","white").attr("stroke-width",3).attr("x1", barScale(legendMinMax[1])).attr("x2", barScale(legendMinMax[1])).attr("y1", 0).attr("y1", barHeight+4);
+
         }
-        else if (username === "RealSkipBayless") {
-            Info_detail_max5 = "Top 5 States: Texas / Oklahoma / Washington / Ohio / Arizona"
-            Info_detail_other1 = "1)　Born in Oklahoma City, Oklahoma"
-            Info_detail_other2 = "2)　Fan of the Dallas Cowboys (Texas) NFL team and Oklahoma Sooners College Football Team"
-        }
-        else if (username === "ShannonSharpe") {
-            Info_detail_max5 = "Top 5 States: Maine / Indiana / Washington / Texas / Ohio"
-            Info_detail_other1 = "1)　Attended Savannah State University (Georgia)"
-            Info_detail_other2 = "2)　Played in the NFL for the Denver Broncos (Colorado) and Baltimore Ravens (Maryland)"
-        }
-        else if (username === "PatMcAfeeShow") {
-            Info_detail_max5 = "Top 5 States: Indiana / Ohio / Washington / Virginia / Texas"
-            Info_detail_other1 = "1)　Born in Pennsylvania"
-            Info_detail_other2 = "2)　Played in the NFL for the Indianapolis Colts (Indiana)"
-        }
-        else if (username === "maxkellerman") {
-            Info_detail_max5 = "Top 5 States: Kentucky / New York / Alabama / Washington / Ohio"
-            Info_detail_other1 = "1)　Hosts ESPN shows in New York"
-            Info_detail_other2 = "2)　Avid boxing fan"
-        }
-        else if (username === "stephenasmith") {
-            Info_detail_max5 = "Top 5 States: New York / Alabama / Michigan / Kentucky / Ohio"
-            Info_detail_other1 = "1)　Hosts ESPN shows in New York"
-            Info_detail_other2 = "2)　Infamous Dallas Cowboys 'hater' "
-        }
 
-        let InfoText = Info.append('text')
-                        .attr("fill", "black")
-                        .attr("text-anchor","left")
-                        .attr("alignment-baseline","hanging")
-                        .attr("font-size", 14)
-                        .attr("font-weight", 800)
-                        .attr("x", 20)
-                        .attr("y", 10);
+      </script>
 
-        if (username === "total") {
-          InfoText.text("All Sports Analysts");
-        }
-
-        else {
-          InfoText.attr("font-style", "italic");
-          InfoText.text("@"+username);
-        }
-
-        let InfoText_max = Info.append('text')
-                        .attr("fill", "black")
-                        .attr("text-anchor","left")
-                        .attr("alignment-baseline","hanging")
-                        .attr("font-size", 13)
-                        .attr("font-weight", 350)
-                        .attr("x", 20)
-                        .attr("y", 40)
-        InfoText_max.text(Info_detail_max5)
-
-        let InfoText3 = Info.append('text')
-                        .attr("fill", "black")
-                        .attr("text-anchor","left")
-                        .attr("alignment-baseline","hanging")
-                        .attr("font-size", 13)
-                        .attr("x", 20)
-                        .attr("y", 70)
-        InfoText3.text(Info_detail_other1)
-
-        let InfoText4 = Info.append('text')
-                        .attr("fill", "black")
-                        .attr("text-anchor","left")
-                        .attr("alignment-baseline","hanging")
-                        .attr("font-size", 13)
-                        .attr("font-weight", 350)
-                        .attr("x", 20)
-                        .attr("y", 100)
-        InfoText4.text(Info_detail_other2);
-
-    }
-    makeChoropleth();
-
-
-
-</script>
-
-<script>
-
-    function drawLegend(legend, legendColorScale) {
-
-      const legendWidth = legend.attr("width");
-      const legendHeight = legend.attr("height");
-      const legendMinMax = d3.extent(legendColorScale.domain());
-      const barHeight = 60;
-      const stepSize = 4;
-      const pixelScale = d3.scaleLinear().domain([0,legendWidth-40]).range([legendMinMax[0]-1,legendMinMax[1]+1]);
-      const barScale = d3.scaleLinear().domain([legendMinMax[0]-1,legendMinMax[1]+1]).range([0,legendWidth-40]);
-      const barAxis = d3.axisBottom(barScale);
-
-      if (legendColorScale.hasOwnProperty('quantiles')) {
-        barAxis.tickValues(legendColorScale.quantiles().concat( legendMinMax ));
-      }
-      legend.append("rect")
-            .attr("x", 0)
-            .attr("height", 300)
-            .attr("y", 0)
-            .attr("width", 900)
-            .attr("fill", "white")
-
-      legend.append("g")
-        .attr("class", "colorbar axis")
-        .attr("transform","translate("+(20)+","+(barHeight+5)+")")
-        .call(barAxis);
-
-      let bar = legend.append("g").attr("transform","translate("+(20)+","+(0)+")").attr("opacity", 0.8)
-      for (let i=0; i<legendWidth-40; i=i+stepSize) {
-        bar.append("rect")
-          .attr("x", i)
-          .attr("y", 0)
-          .attr("width", stepSize)
-          .attr("height",barHeight)
-          .attr("fill", legendColorScale( pixelScale(i) ))
-
-
-      }
-      bar.append("line").attr("stroke","white").attr("stroke-width",3).attr("x1", barScale(legendMinMax[0])).attr("x2", barScale(legendMinMax[0])).attr("y1", 0).attr("y1", barHeight+4);
-      bar.append("line").attr("stroke","white").attr("stroke-width",3).attr("x1", barScale(legendMinMax[1])).attr("x2", barScale(legendMinMax[1])).attr("y1", 0).attr("y1", barHeight+4);
-
-
-
-    }
-</script>
     </p>
     </div>
 </body>

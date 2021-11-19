@@ -1,0 +1,28 @@
+
+[
+    {
+        "text": "lebron",
+        "value": 7718, 
+        "format": "Lebron James"
+    },
+    {
+        "text": "nfl",
+        "value": 7164, 
+        "format": "NFL"
+    },
+    {
+        "text": "patmcafeeshow",
+        "value": 6279,
+        "format": "Pat McAfee Show"
+    },
+    {
+        "text": "brady",
+        "value": 5208,
+        "format": "Tom Brady"
+    },
+    {
+        "text": "broncos",
+        "value": 4354,
+        "format": "Denver Broncos"
+    }
+]
